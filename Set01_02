@@ -1,0 +1,114 @@
+class Person{
+    private String name;
+    private Car cars;
+    Person(String n){
+        this.name = n;
+        this.cars = null;
+    }
+    public Person buys(String make, int price){
+        if(this.cars != null){
+            Car tmp = this.cars;
+            this.cars = new Car(make, price, tmp);
+        }else{
+            this.cars = new Car(make, price);
+        }
+        return this;
+    }
+    public String getName(){return this.name;}
+    public void showCars(){this.cars.showCars();}
+    public void showCarsRev(){this.cars.showCarsRev();}
+    public int getTotalPrice(){
+        Car n = this.cars;
+        int sum = 0;
+        while(n != null){
+            sum += n.getPrice();
+            n = n.getNext();
+        }
+        return sum;
+    }
+    public boolean hasCar(String make){
+        Car n = this.cars;
+        while(n != null){
+            if(n.getMake().equalsIgnoreCase(make)){
+                return true;
+            }
+            n = n.getNext();
+        }
+        return false;
+    }
+    public Car mostExpensive(){
+        Car n = this.cars;
+        Car max = this.cars;
+        while(n != null){
+            if(n.getPrice() > max.getPrice()){
+                max = n;
+            }
+            n = n.getNext();
+        }
+        return max;
+    }
+}
+class Car{
+    private String make;
+    private int price;
+    private Car next;
+    Car(String n, int p, Car c){
+        this.make = n;
+        this.price = p;
+        this.next = c;
+    }
+    Car(String make, int price){
+        this.make = make;
+        this.price = price;
+        this.next = null;
+    }
+    public String getMake(){return this.make;}
+    public int getPrice(){return this.price;}
+    public Car getNext(){return this.next;}
+    public void showCars(){
+        Car n = this;
+        while(n != null){
+            System.out.println(n);
+            n = n.next;
+        }
+    }
+    public void showCarsRev(){showCarsRec(this);}
+    private void showCarsRec(Car c){
+        if(c == null){
+            return;
+        }
+        if(c.next != null){
+            showCarsRec(c.next);
+        }
+        System.out.println(c);
+    }
+    @Override
+    public String toString(){
+        return this.make+"("+this.price+") ";
+    }
+
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Person john = new Person("John");
+        john.buys("Ford", 20000)
+                .buys("Opel", 16000)
+                .buys("Fiat", 12000)
+                .showCars();
+        System.out.println();
+
+        john.showCarsRev();
+        System.out.println();
+
+        System.out.println("Total price of " +
+                john.getName() + "'s cars: " +
+                john.getTotalPrice());
+        System.out.println("Does " + john.getName() +
+                " have a ford? " + john.hasCar("ford"));
+        System.out.println("Does " + john.getName() +
+                " have a bmw?  " + john.hasCar("bmw"));
+        System.out.println(john.getName() + "'s most " +
+                "expensive car is " + john.mostExpensive());
+    }
+}
